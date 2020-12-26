@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Ionium</string>
+    <string name="devices">Devices</string>
+    <string name="connected">Connected</string>
+    <string name="failed">\"Connection failed: \"</string>
+    <string name="lost">\"Connection lost: \"</string>
+    <string name="Connecting">Connecting...</string>
+</resources>
