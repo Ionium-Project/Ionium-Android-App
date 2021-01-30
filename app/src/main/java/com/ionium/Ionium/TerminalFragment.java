@@ -33,6 +33,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private enum Connected { False, Pending, True }
 
     private String deviceAddress;
+    private String userName;
+    private String userNumber;
     private SerialService service;
 
     private TextView receiveText;
@@ -54,6 +56,10 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         setHasOptionsMenu(true);
         setRetainInstance(true);
         deviceAddress = getArguments().getString("device");
+        userName = getArguments().getString("name");
+        userNumber = getArguments().getString("number");
+        userNumber.replaceAll("\n", "");
+        userNumber.replaceAll("\0", "");
     }
 
     @Override
@@ -134,7 +140,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         sendText.setHint(hexEnabled ? "HEX mode" : "");
 
         View sendBtn = view.findViewById(R.id.send_btn);
-        sendBtn.setOnClickListener(v -> send(sendText.getText().toString()));
+        Toast toast =  Toast.makeText(getContext(),userNumber + " | " + sendText.getText().toString(),Toast.LENGTH_SHORT);
+        toast.show();
+        sendBtn.setOnClickListener(v -> send(userNumber + " | " + sendText.getText().toString()));
         return view;
     }
 
@@ -211,9 +219,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 data = TextUtil.fromHexString(msg);
             } else {
                 msg = str;
-                data = (str + newline).getBytes();
+                data = (str + newline).getBytes("UTF-8");
+                String woho = new String(data);
+                Toast toast =  Toast.makeText(getContext(),woho,Toast.LENGTH_SHORT);
+                toast.show();
             }
-            SpannableStringBuilder spn = new SpannableStringBuilder(msg+'\n');
+            SpannableStringBuilder spn = new SpannableStringBuilder(msg +'\n');
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             receiveText.append(spn);
             service.write(data);
